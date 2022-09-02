@@ -24,8 +24,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Text(currentFact),
           IconButton(
             onPressed: () => {
-              //var box = Hive.box('myBox');
-              //box.put('name', 'David');
+              _favFact(),
             },
             icon: const Icon(Icons.favorite),
           ),
@@ -38,6 +37,18 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
     );
+  }
+
+
+  void _favFact() async {
+    if(currentID == '' || currentFact == ''){
+      return;
+    }
+    var box = await Hive.openBox('factBox');
+    if(!box.containsKey(currentID)){
+      box.put(currentID, currentFact);
+    }
+    box.close();
   }
 
   void _getFact() async {
