@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:useless_facts/favorite_page.dart';
 import 'package:useless_facts/home_page.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:hive/hive.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  var dir = await getApplicationDocumentsDirectory();
+  Hive.init(dir.path);
   runApp(const MyApp());
 }
 
