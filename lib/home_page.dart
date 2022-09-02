@@ -11,9 +11,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   var currentFact = '';
   var currentID = '';
+  var isFaved = false;
 
   @override
   Widget build(BuildContext context) {
@@ -39,13 +39,12 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-
   void _favFact() async {
-    if(currentID == '' || currentFact == ''){
+    if (currentID == '' || currentFact == '') {
       return;
     }
     var box = await Hive.openBox('factBox');
-    if(!box.containsKey(currentID)){
+    if (!box.containsKey(currentID)) {
       box.put(currentID, currentFact);
     }
     box.close();

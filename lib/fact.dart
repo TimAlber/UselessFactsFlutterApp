@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-UselessFact uselessFactFromJson(String str) => UselessFact.fromJson(json.decode(str));
+UselessFact uselessFactFromJson(String str) =>
+    UselessFact.fromJson(json.decode(str));
 
 String uselessFactToJson(UselessFact data) => json.encode(data.toJson());
 
@@ -22,20 +23,20 @@ class UselessFact {
   String permalink;
 
   factory UselessFact.fromJson(Map<String, dynamic> json) => UselessFact(
-    id: json["id"],
-    text: json["text"],
-    source: json["source"],
-    sourceUrl: json["source_url"],
-    language: json["language"],
-    permalink: json["permalink"],
-  );
+        id: json["id"],
+        text: json["text"],
+        source: json["source"],
+        sourceUrl: json["source_url"],
+        language: json["language"],
+        permalink: json["permalink"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "text": text,
-    "source": source,
-    "source_url": sourceUrl,
-    "language": language,
-    "permalink": permalink,
-  };
+        "id": id,
+        "text": text,
+        "source": source,
+        "source_url": sourceUrl,
+        "language": language,
+        "permalink": permalink,
+      };
 }
