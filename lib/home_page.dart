@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:useless_facts/fact.dart';
 import 'package:hive/hive.dart';
+import 'package:useless_facts/favorite_page.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -11,9 +12,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var currentFact = '';
-  var currentID = '';
   var isFaved = false;
+  FactHolder? currentFact;
 
   @override
   Widget build(BuildContext context) {
@@ -21,18 +21,33 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          Text(currentFact),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
+            child: Text(
+              currentFact != null ? currentFact!.fact : '',
+              style: const TextStyle(fontSize: 25),
+              textAlign: TextAlign.center,
+            ),
+          ),
           IconButton(
             onPressed: () => {
               _favFact(),
             },
-            icon: const Icon(Icons.favorite),
+            icon: Icon(
+              Icons.favorite,
+              color: isFaved ? Colors.red : Colors.black,
+            ),
+            iconSize: 100,
           ),
           TextButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.grey),
+            ),
             onPressed: () => {
               _getFact(),
             },
-            child: const Text('Get New Fact'),
+            child: const Text('Get New Fact',
+                style: TextStyle(fontSize: 25, color: Colors.blue)),
           )
         ],
       ),
@@ -40,13 +55,23 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _favFact() async {
-    if (currentID == '' || currentFact == '') {
+    if (currentFact == null) {
       return;
     }
+
+    setState(() {
+      isFaved = !isFaved;
+    });
+
     var box = await Hive.openBox('factBox');
-    if (!box.containsKey(currentID)) {
-      box.put(currentID, currentFact);
+    if (!box.containsKey(currentFact!.id) && isFaved) {
+      box.put(currentFact!.id, currentFact!.fact);
     }
+
+    if (box.containsKey(currentFact!.id) && !isFaved) {
+      box.delete(currentFact!.id);
+    }
+
     box.close();
   }
 
@@ -59,8 +84,8 @@ class _MyHomePageState extends State<MyHomePage> {
       final uselessFact = uselessFactFromJson(output);
 
       setState(() {
-        currentFact = uselessFact.text;
-        currentID = uselessFact.id;
+        currentFact = FactHolder(id: uselessFact.id, fact: uselessFact.text);
+        isFaved = false;
       });
     } else {
       print(response.reasonPhrase);
