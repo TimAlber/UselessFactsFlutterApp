@@ -77,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _getFact() async {
     var request =
-        Request('GET', Uri.parse('https://uselessfacts.jsph.pl/random.json'));
+        Request('GET', Uri.parse('https://uselessfacts.jsph.pl/random.json?language=en'));
     StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       final output = await response.stream.bytesToString();
